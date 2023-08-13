@@ -53,7 +53,7 @@ class ScreenA extends StatelessWidget {
       title: 'Screen A',
       color: Colors.deepOrange,
       widget: ElevatedButton(
-          onPressed: () => Get.toNamed(Routes.screenB), child: Text('go to B')),
+          onPressed: () => Get.toNamed(Routes.screenB), child: const Text('go to B')),
     );
   }
 }
@@ -68,7 +68,7 @@ class ScreenB extends StatelessWidget {
         color: Colors.green,
         widget: ElevatedButton(
             onPressed: () => Get.toNamed(Routes.screenC, arguments: "sss"),
-            child: Text('go to C')));
+            child: const Text('go to C')));
   }
 }
 
@@ -92,12 +92,22 @@ class ScreenLogin extends StatelessWidget {
   }
 }
 
+class Screen404 extends StatelessWidget {
+  const Screen404({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return const Screen(
+        title: 'Screen 404', color: Colors.grey, widget: Text("404"));
+  }
+}
+
 class AuthGuard extends GetMiddleware {
   @override
   RouteSettings? redirect(String? route) {
     print(route);
     return authToken.isEmpty
-        ? RouteSettings(name: Routes.login)
+        ? const RouteSettings(name: Routes.login)
         // : null;
         : super.redirect(route);
   }
@@ -119,7 +129,9 @@ class MyApp extends StatelessWidget {
     return GetMaterialApp(
       title: 'Flutter Demo',
       initialRoute: '/',
+      unknownRoute: GetPage(name: '/404',page: () => Screen404(),) ,
       getPages: [
+
         // GetPage(name: '/', page: () => const ScreenA(),),
         GetPage(
           name: Routes.screenA,
@@ -130,7 +142,7 @@ class MyApp extends StatelessWidget {
             middlewares: [AuthGuard()],
             page: () => const ScreenB(),
             transition: Transition.fade,
-            transitionDuration: Duration(seconds: 1)),
+            transitionDuration: const Duration(seconds: 1)),
         GetPage(
           name: Routes.screenC,
           page: () => const ScreenC(),
