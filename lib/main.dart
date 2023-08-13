@@ -1,39 +1,50 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
+const authToken = '';
+
 void main() {
   runApp(const MyApp());
 }
 
-class Screen extends StatelessWidget{
-  final String title ;
+class Screen extends StatelessWidget {
+  final String title;
+
   final Color color;
   final Widget widget;
 
-  const Screen({super.key, required this.title, required this.color, required this.widget});
+  const Screen(
+      {super.key,
+      required this.title,
+      required this.color,
+      required this.widget});
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: color,
-      appBar: AppBar(title: Text(title),),
+      appBar: AppBar(
+        title: Text(title),
+      ),
       body: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          Center(child: Column(
-            children: [
-              Text(title),
-              widget,
-            ],
-          ),)
-
-      ],),
+          Center(
+            child: Column(
+              children: [
+                Text(title),
+                widget,
+              ],
+            ),
+          )
+        ],
+      ),
     );
   }
-
 }
 
-class ScreenA extends StatelessWidget{
+class ScreenA extends StatelessWidget {
   const ScreenA({super.key});
 
   @override
@@ -42,40 +53,53 @@ class ScreenA extends StatelessWidget{
       title: 'Screen A',
       color: Colors.deepOrange,
       widget: ElevatedButton(
-          onPressed: () => Get.toNamed(Routes.screenB),
-          child: Text('go to B')
-      ),
+          onPressed: () => Get.toNamed(Routes.screenB), child: Text('go to B')),
     );
   }
 }
 
-class ScreenB extends StatelessWidget{
+class ScreenB extends StatelessWidget {
   const ScreenB({super.key});
 
   @override
   Widget build(BuildContext context) {
     return const Screen(
-        title: 'Screen B',
-        color: Colors.green,
-        widget: Text("data")
-    );
+        title: 'Screen B', color: Colors.green, widget: Text("data"));
   }
 }
 
-class ScreenC extends StatelessWidget{
+class ScreenC extends StatelessWidget {
   const ScreenC({super.key});
 
   @override
   Widget build(BuildContext context) {
     return const Screen(
-        title: 'Screen C',
-        color: Colors.blueAccent,
-        widget: Text("data")
-    );
+        title: 'Screen C', color: Colors.blueAccent, widget: Text("data"));
   }
 }
 
-class Routes{
+class ScreenLogin extends StatelessWidget {
+  const ScreenLogin({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return const Screen(
+        title: 'Screen Login', color: Colors.blueAccent, widget: Text("data"));
+  }
+}
+
+class AuthGuard extends GetMiddleware {
+  @override
+  RouteSettings? redirect(String? route) {
+    print(route);
+    return authToken.isEmpty
+        ? RouteSettings(name: Routes.login)
+        // : null;
+        : super.redirect(route);
+  }
+}
+
+class Routes {
   static const String screenA = '/screen-a';
   static const String screenB = '/screen-b';
   static const String screenC = '/screen-c';
@@ -91,12 +115,26 @@ class MyApp extends StatelessWidget {
     return GetMaterialApp(
       title: 'Flutter Demo',
       initialRoute: '/',
-
       getPages: [
         // GetPage(name: '/', page: () => const ScreenA(),),
-        GetPage(name: Routes.screenA, page: () => const ScreenA(),),
-        GetPage(name: Routes.screenB, page: () => const ScreenB(),transition: Transition.fade,transitionDuration: Duration(seconds: 1)),
-        GetPage(name: Routes.screenC, page: () => const ScreenC(),),
+        GetPage(
+          name: Routes.screenA,
+          page: () => const ScreenA(),
+        ),
+        GetPage(
+            name: Routes.screenB,
+            middlewares: [AuthGuard()],
+            page: () => const ScreenB(),
+            transition: Transition.fade,
+            transitionDuration: Duration(seconds: 1)),
+        GetPage(
+          name: Routes.screenC,
+          page: () => const ScreenC(),
+        ),
+        GetPage(
+          name: Routes.login,
+          page: () => const ScreenLogin(),
+        ),
       ],
       theme: ThemeData(
         // This is the theme of your application.
