@@ -5,23 +5,74 @@ void main() {
   runApp(const MyApp());
 }
 
-class ScreenA extends StatelessWidget{
-  final String title = 'Screen A';
+class Screen extends StatelessWidget{
+  final String title ;
+  final Color color;
+  final Widget widget;
+
+  const Screen({super.key, required this.title, required this.color, required this.widget});
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.deepOrange,
+      backgroundColor: color,
       appBar: AppBar(title: Text(title),),
       body: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          Center(child: Text(title),)
+          Center(child: Column(
+            children: [
+              Text(title),
+              widget,
+            ],
+          ),)
 
       ],),
     );
   }
-  
+
+}
+
+class ScreenA extends StatelessWidget{
+  const ScreenA({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Screen(
+      title: 'Screen A',
+      color: Colors.deepOrange,
+      widget: ElevatedButton(
+          onPressed: () => Get.toNamed(Routes.screenB),
+          child: Text('go to B')
+      ),
+    );
+  }
+}
+
+class ScreenB extends StatelessWidget{
+  const ScreenB({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return const Screen(
+        title: 'Screen B',
+        color: Colors.green,
+        widget: Text("data")
+    );
+  }
+}
+
+class ScreenC extends StatelessWidget{
+  const ScreenC({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return const Screen(
+        title: 'Screen C',
+        color: Colors.blueAccent,
+        widget: Text("data")
+    );
+  }
 }
 
 class Routes{
@@ -39,8 +90,13 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return GetMaterialApp(
       title: 'Flutter Demo',
+      initialRoute: '/',
+
       getPages: [
-        GetPage(name: Routes.screenA, page: () => ScreenA(),)
+        // GetPage(name: '/', page: () => const ScreenA(),),
+        GetPage(name: Routes.screenA, page: () => const ScreenA(),),
+        GetPage(name: Routes.screenB, page: () => const ScreenB(),transition: Transition.fade,transitionDuration: Duration(seconds: 1)),
+        GetPage(name: Routes.screenC, page: () => const ScreenC(),),
       ],
       theme: ThemeData(
         // This is the theme of your application.
