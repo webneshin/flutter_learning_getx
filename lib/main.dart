@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-const authToken = '';
+const authToken = 'a';
 
 void main() {
   runApp(const MyApp());
@@ -63,8 +63,12 @@ class ScreenB extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const Screen(
-        title: 'Screen B', color: Colors.green, widget: Text("data"));
+    return Screen(
+        title: 'Screen B',
+        color: Colors.green,
+        widget: ElevatedButton(
+            onPressed: () => Get.toNamed(Routes.screenC, arguments: "sss"),
+            child: Text('go to C')));
   }
 }
 
@@ -73,8 +77,8 @@ class ScreenC extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const Screen(
-        title: 'Screen C', color: Colors.blueAccent, widget: Text("data"));
+    return Screen(
+        title: 'Screen C', color: Colors.blueAccent, widget: Text(Get.arguments));
   }
 }
 
